@@ -1,0 +1,41 @@
+import pygame, pygame.midi, pprint, math, lightpack, sys, time, colorsys, csv, threading
+from phue import Bridge
+import pandas as pd
+from scapy.all import *
+
+def extPadSniffer(hunk_of_data):
+    data,lights,input_id,colored_lights,lightpack,bnw_lights,light,lp,MACs = hunk_of_data
+    print("extPadSniffer start")
+    i = pygame.midi.Input(input_id)
+    while True:
+        if i.poll():
+            midi_events = i.read(1)
+            key = midi_events[0][0][1]
+            value = midi_events[0][0][2]
+
+            line = data[data.id==str(key)]
+
+            #Set colored lights
+            for cl in colored_lights:
+                    R = int(line[cl + ' R'])
+                    G = int(line[cl + ' G'])
+                    B = int(line[cl + ' B'])
+                    R, G, B = [x/255.0 for x in [R, G, B]]
+                    [hue, bri, sat] = colorsys.rgb_to_hls(float(R),float(G),float(B))
+                    light[cl].on = True
+                    light[cl].hue = int(hue*65535)
+                    light[cl].brightness = int(bri*254)
+                    light[cl].saturation = int(sat*254)
+                
+            #Set bnw lights
+            for bnw in bnw_lights:
+                    bri = line[bnw + ' bri']
+                    light[bnw].on = True
+                    light[bnw].bri = bri
+
+            #Set lightpacks
+            for cl in lightpack:
+                    R = int(line[cl + ' R'])
+                    G = int(line[cl + ' G'])
+                    B = int(line[cl + ' B'])
+                    lp.setColourToAll((R, G, B))
