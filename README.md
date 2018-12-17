@@ -1,4 +1,4 @@
-## Hue Lights Controll
+## Hue Lights Control
 
 This is a project to give myself more control over the lights in my apartment.
 
