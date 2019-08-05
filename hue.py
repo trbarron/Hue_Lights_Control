@@ -7,8 +7,10 @@ import extPS, extBS, extTimer
 ################################
 
 b = Bridge('192.168.0.2')
-MACs = ['78:e1:03:f6:27:dc','18:74:2e:25:ec:12']
+MACs = ['78:e1:03:f6:27:dc','18:74:2e:25:ec:12','18:74:2e:80:4c:c7','68:37:e9:2e:55:4a']
 exitFlag = 0
+
+lightpack_enabled = False
 
 # Configuration
 # host = '192.168.0.4' # (default)
@@ -20,15 +22,17 @@ exitFlag = 0
 b.connect()
 
 # Connect to the Lightpack API
-lp = lightpack.Lightpack()
-try:
-	lp.connect()
-except lightpack.CannotConnectError as e:
-	print(repr(e))
-	sys.exit(1)
+if lightpack_enabled:
+        lp = lightpack.Lightpack()
+        try:
+                lp.connect()
+        except lightpack.CannotConnectError as e:
+                print(repr(e))
+                sys.exit(1)
 
-# Lock the Lightpack so we can make changes
-lp.lock()
+        # Lock the Lightpack so we can make changes
+        lp.lock()
+else: lp = None
 
 ################################
 
@@ -53,7 +57,7 @@ lights = b.get_light_objects('id')
 f = 'weatherScenes.csv' #point it towards CSV
 data = pd.read_csv(f)
 
-hunk_of_data = [data,lights,input_id,colored_lights,lightpack,bnw_lights,light,lp,MACs]
+hunk_of_data = [data,lights,input_id,colored_lights,lightpack,bnw_lights,light,lp,MACs,lightpack_enabled]
 
 ################################
 

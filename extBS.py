@@ -6,7 +6,7 @@ from scapy.all import *
 ################################
 
 def extButtonSniffer(hunk_of_data):
-    data,lights,input_id,colored_lights,lightpack,bnw_lights,light,lp,MACs = hunk_of_data
+    data,lights,input_id,colored_lights,lightpack,bnw_lights,light,lp,MACs,lightpack_enabled = hunk_of_data
     time_called = 0
     filter_list = "ether host " + MACs[0]
     for i in range(1,len(MACs)):
